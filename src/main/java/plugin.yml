@@ -1,0 +1,35 @@
+name: theLibrary
+main: theLibrary.TheLibrary
+version: 0.6.0
+author: chrissamael
+api-version: 1.14
+commands:
+  listvillagers:
+    description: Lists all villagers saved in The Library
+    usage: /listvillagers or /listvillagers 1 for second page, and so on
+    permission: theLibraryPerm
+    permission-message: You do not have permission to use this command!
+  respawnvillager:
+    description: Returns villagers from The Library, either by radius or via specific id
+    usage: /respawnvillager radius 20 or /raspawnvillager id 2
+    permission: theLibraryPerm
+    permission-message: You do not have permission to use this command!
+  deletevillager:
+    description: Deletes a villager from The Library
+    usage: /deletevillager 1
+    permission: theLibraryPerm
+    permission-message: You do not have permission to use this command!
+  findnamedvillagers:
+    description: Searches The Library for a Villager with the given name
+    usage: /findnamedvillagers "Donna Noble"
+    permission: theLibraryPerm
+    permission-message: You do not have permission to use this command!
+  findvillagers:
+    descirption: Searches The Library for a Villager in a given radius around the player. Also has the option to highlight locations of missing villagers
+    usage: /findvillagers 50 [show]
+    permission: theLibraryPerm
+    permission-message: You do not have permission to use this command!
+permissions:
+  theLibraryPerm:
+    description: Allows commanding The Library
+    default: op
