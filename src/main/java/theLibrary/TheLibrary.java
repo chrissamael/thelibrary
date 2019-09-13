@@ -48,7 +48,6 @@ public final class TheLibrary extends JavaPlugin {
     
     @Override
     public void onDisable() {
-        // TODO Insert logic to be performed when the plugin is disabled
     	for(UUID id : villagerlisteners.getArmorStands().keySet())
     	{
     		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "kill "+id);

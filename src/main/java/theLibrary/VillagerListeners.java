@@ -6,11 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
@@ -18,6 +17,7 @@ import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityTransformEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
@@ -57,7 +57,34 @@ public class VillagerListeners implements Listener {
 			}
 		}
 	}
-	
+	/*
+	 * This EventHandler is the first try to implement a "delete on transform to witch" logic
+	 * Sadly, the witch has no data which can 
+	@EventHandler
+	public void onVillagerLightningStrike(EntityTransformEvent e)
+	{
+		ArrayList<String> ids = new ArrayList<String>();
+		try {
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT uuid FROM villager");
+			while(rs.next())
+			{
+				ids.add(rs.getString("uuid"));
+				System.out.println(rs.getString("uuid"));
+			}
+			System.out.println("looking for: "+e.getTransformedEntity().getUniqueId().toString());
+			if(e.getTransformReason() == EntityTransformEvent.TransformReason.LIGHTNING && ids.contains(e.getTransformedEntity().getUniqueId().toString()))
+			{
+				System.out.println("found villager struck by lightning");
+				stmt.executeQuery("DELETE FROM villager WHERE uuid='"+e.getEntity().getUniqueId()+"'");
+			}
+		}catch(Exception exc)
+		{
+			exc.printStackTrace();
+		}
+
+	}
+	*/
 	@EventHandler
 	public void onChunkUnload(ChunkUnloadEvent e)
 	{
@@ -85,8 +112,7 @@ public class VillagerListeners implements Listener {
 		stmt.executeUpdate();
 		}catch(Exception exc2)
 		{
-			Logger.getLogger("Minecraft").log(Level.INFO,"INSERT INTO villager (uuid,name,posx,posy,posz,world,nbt,timestamp) VALUES ('"+villager.getUniqueId()+"','"+villager.getCustomName()+"',"
-					+ villager.getLocation().getX()+","+villager.getLocation().getY()+","+villager.getLocation().getZ()+",'"+villager.getLocation().getWorld().getName()+"','"+tag.asString().replaceAll("'", "''")+"','"+sdf.format(System.currentTimeMillis())+"')");
+			exc2.printStackTrace();
 		}
 	}
 	
@@ -121,6 +147,10 @@ public class VillagerListeners implements Listener {
 			updateStmt.executeUpdate();		
 			return true;
 		}
+		else
+		{
+			System.out.println("NBT DATA MISSMATCH");
+		}
 
 		}
 		else
@@ -130,6 +160,7 @@ public class VillagerListeners implements Listener {
 
 		}catch(SQLException exc)
 		{
+			exc.printStackTrace();
 				return false;
 		}
 		return false;
@@ -138,13 +169,13 @@ public class VillagerListeners implements Listener {
 	@EventHandler
 	public void onInteractBy(PlayerInteractAtEntityEvent e)
 	{
-		e.getPlayer().sendMessage("You clicked on "+e.getRightClicked().getUniqueId());
-		System.out.println("Following UUIDs are known:");
+		//e.getPlayer().sendMessage("You clicked on "+e.getRightClicked().getUniqueId());
+		//System.out.println("Following UUIDs are known:");
 		if(con != null && e.getRightClicked() instanceof ArmorStand)
 		{
 			for(UUID id : armorStands.keySet())
 			{
-				System.out.println(id);
+				//System.out.println(id);
 				if(id.toString().equalsIgnoreCase(e.getRightClicked().getUniqueId().toString()) &&
 						armorStands.get(id)[1].equalsIgnoreCase(e.getPlayer().getUniqueId().toString())) {
 					Player p = e.getPlayer();

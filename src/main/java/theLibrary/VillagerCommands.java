@@ -90,6 +90,11 @@ public class VillagerCommands implements CommandExecutor {
 					p.sendMessage(""+rs.getString("id")+": '"+rs.getString("name")+"'("+rs.getFloat("posx")+" "+rs.getFloat("posy")+" "+rs.getFloat("posz")+" ["+rs.getString("world")+"]) ["+rs.getString("timestamp")+"]");					
 					if(show.equalsIgnoreCase("show"))
 					{
+				    	for(UUID id : listeners.getArmorStands().keySet())
+				    	{
+				    		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "kill "+id);
+				    		listeners.removeArmorStand(id);
+				    	}
 						UUID id = UUID.randomUUID();
 						long UUIDMost = id.getMostSignificantBits();
 						long UUIDLeast = id.getLeastSignificantBits();
