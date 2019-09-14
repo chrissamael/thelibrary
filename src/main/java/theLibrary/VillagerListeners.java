@@ -149,7 +149,7 @@ public class VillagerListeners implements Listener {
 		}
 		else
 		{
-			System.out.println("NBT DATA MISSMATCH");
+
 		}
 
 		}

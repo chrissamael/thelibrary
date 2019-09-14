@@ -3,6 +3,8 @@ package theLibrary;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -70,7 +72,9 @@ public class VillagerCommands implements CommandExecutor {
 			try {
 				radius = Integer.parseInt(args[0]);
 				show = args[1];
-			}catch(Exception e) {}
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 			
 
 			
@@ -80,9 +84,23 @@ public class VillagerCommands implements CommandExecutor {
 			double highY = p.getLocation().getY()+radius;			
 			double lowZ = p.getLocation().getZ()-radius;
 			double highZ = p.getLocation().getZ()+radius;
+			if(show.equalsIgnoreCase("show") && !listeners.getArmorStands().isEmpty()) {
+				Map<UUID,String[]> armorStands = new HashMap<UUID,String[]>();
+				for(UUID id : listeners.getArmorStands().keySet())
+				{
+					armorStands.put(id, listeners.getArmorStands().get(id));
+				}
+		    	for(UUID id : armorStands.keySet())
+		    	{
+		    		System.out.println(id.toString());
+		    		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "kill "+id.toString());
+		    		listeners.removeArmorStand(id);
+		    	}
+			}
 			try
 			{
-				p.sendMessage("Found following villager(s) saved The Library in the radius of "+radius+":");
+				System.out.println();
+				p.sendMessage("Found following villager(s) saved in The Library in the radius of "+radius+":");
 				Statement stmt = con.createStatement();
 				ResultSet rs = stmt.executeQuery("SELECT * FROM villager WHERE posx<="+highX+" AND posx>="+lowX+" AND posy<="+highY+" AND posy>="+lowY+" AND posz<="+highZ+" AND posz>="+lowZ+" AND world='"+p.getLocation().getWorld().getName()+"'");
 				while(rs.next())
@@ -90,11 +108,6 @@ public class VillagerCommands implements CommandExecutor {
 					p.sendMessage(""+rs.getString("id")+": '"+rs.getString("name")+"'("+rs.getFloat("posx")+" "+rs.getFloat("posy")+" "+rs.getFloat("posz")+" ["+rs.getString("world")+"]) ["+rs.getString("timestamp")+"]");					
 					if(show.equalsIgnoreCase("show"))
 					{
-				    	for(UUID id : listeners.getArmorStands().keySet())
-				    	{
-				    		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "kill "+id);
-				    		listeners.removeArmorStand(id);
-				    	}
 						UUID id = UUID.randomUUID();
 						long UUIDMost = id.getMostSignificantBits();
 						long UUIDLeast = id.getLeastSignificantBits();
