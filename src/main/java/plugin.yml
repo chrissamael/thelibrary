@@ -1,6 +1,6 @@
 name: theLibrary
 main: theLibrary.TheLibrary
-version: 0.6.1
+version: 0.6.2
 author: chrissamael
 api-version: 1.14
 commands:
