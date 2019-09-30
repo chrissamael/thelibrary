@@ -124,46 +124,45 @@ public class VillagerListeners implements Listener {
 		//nmsEntity.c(tag);
 		try
 		{
-		Statement stmt = con.createStatement();
-		ResultSet rs = stmt.executeQuery("SELECT * FROM villager WHERE uuid='"+villager.getUniqueId()+"'");
-		rs.next();
-		//player.sendMessage("result: "+rs.getString("name"));
-		if(!rs.isClosed())
-		{
-		String nbtDB = rs.getString("nbt").replaceAll("Spigot.ticksLived:[0123456789]*,", "");
-		String nbtWorld = tag.asString().replaceAll("Spigot.ticksLived:[0123456789]*,", "");
-		if(!nbtDB.equals(nbtWorld))
-		{
-			
-			PreparedStatement updateStmt = con.prepareStatement("UPDATE villager SET "
-					+ "posx='"+villager.getLocation().getX()+"',"
-					+ "posy='"+villager.getLocation().getY()+"',"
-					+ "posz='"+villager.getLocation().getZ()+"',"
-					+ "world='"+villager.getLocation().getWorld().getName()+"',"
-					+ "nbt='"+tag.asString().replaceAll("'", "''")+"',"
-					+ "name='"+villager.getCustomName()+"',"
-					+ "timestamp='"+sdf.format(System.currentTimeMillis())+"' "
-					+ "WHERE uuid='"+villager.getUniqueId()+"'");
-			updateStmt.executeUpdate();		
-			return true;
-		}
-		else
-		{
-
-		}
-
-		}
-		else
-		{
-			return false;
-		}
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT * FROM villager WHERE uuid='"+villager.getUniqueId()+"'");
+			rs.next();
+			//player.sendMessage("result: "+rs.getString("name"));
+			if(!rs.isClosed())
+			{
+				String nbtDB = rs.getString("nbt").replaceAll("Spigot.ticksLived:[0123456789]*,", "");
+				String nbtWorld = tag.asString().replaceAll("Spigot.ticksLived:[0123456789]*,", "");
+				if(!nbtDB.equals(nbtWorld))
+				{
+					
+					PreparedStatement updateStmt = con.prepareStatement("UPDATE villager SET "
+							+ "posx='"+villager.getLocation().getX()+"',"
+							+ "posy='"+villager.getLocation().getY()+"',"
+							+ "posz='"+villager.getLocation().getZ()+"',"
+							+ "world='"+villager.getLocation().getWorld().getName()+"',"
+							+ "nbt='"+tag.asString().replaceAll("'", "''")+"',"
+							+ "name='"+villager.getCustomName()+"',"
+							+ "timestamp='"+sdf.format(System.currentTimeMillis())+"' "
+							+ "WHERE uuid='"+villager.getUniqueId()+"'");
+					updateStmt.executeUpdate();		
+					return true;
+				}
+				else
+				{
+					return true;
+				}
+	
+			}
+			else
+			{
+				return false;
+			}
 
 		}catch(SQLException exc)
 		{
 			exc.printStackTrace();
 				return false;
 		}
-		return false;
 	}
 	
 	@EventHandler
