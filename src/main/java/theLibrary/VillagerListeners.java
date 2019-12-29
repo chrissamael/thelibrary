@@ -23,10 +23,10 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import net.minecraft.server.v1_14_R1.*;
+import net.minecraft.server.v1_15_R1.*;
 
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity;
 
 
 public class VillagerListeners implements Listener {
@@ -102,7 +102,7 @@ public class VillagerListeners implements Listener {
 	
 	private void createVillagerData(Villager villager)
 	{
-		net.minecraft.server.v1_14_R1.Entity nmsEntity = ((CraftEntity)villager).getHandle();
+		net.minecraft.server.v1_15_R1.Entity nmsEntity = ((CraftEntity)villager).getHandle();
 		NBTTagCompound tag = new NBTTagCompound();
 		nmsEntity.save(tag);
 		try
@@ -118,7 +118,7 @@ public class VillagerListeners implements Listener {
 	
 	private boolean updateVillagerData(Villager villager)
 	{
-		net.minecraft.server.v1_14_R1.Entity nmsEntity = ((CraftEntity)villager).getHandle();
+		net.minecraft.server.v1_15_R1.Entity nmsEntity = ((CraftEntity)villager).getHandle();
 		NBTTagCompound tag = new NBTTagCompound();
 		nmsEntity.save(tag);
 		//nmsEntity.c(tag);

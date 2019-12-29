@@ -1,8 +1,8 @@
 name: theLibrary
 main: theLibrary.TheLibrary
-version: 0.6.2
+version: 0.6.5
 author: chrissamael
-api-version: 1.14
+api-version: 1.15
 commands:
   listvillagers:
     description: Lists all villagers saved in The Library
