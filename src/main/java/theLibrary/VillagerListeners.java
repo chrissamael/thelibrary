@@ -107,8 +107,17 @@ public class VillagerListeners implements Listener {
 		nmsEntity.save(tag);
 		try
 		{
-		PreparedStatement stmt = con.prepareStatement("INSERT INTO villager (uuid,name,posx,posy,posz,world,nbt,timestamp) VALUES ('"+villager.getUniqueId()+"','"+villager.getCustomName()+"',"
-				+ villager.getLocation().getX()+","+villager.getLocation().getY()+","+villager.getLocation().getZ()+",'"+villager.getLocation().getWorld().getName()+"','"+tag.asString().replaceAll("'", "''")+"','"+sdf.format(System.currentTimeMillis())+"')");
+		PreparedStatement stmt = con.prepareStatement("INSERT INTO villager (uuid,name,posx,posy,posz,world,nbt,timestamp) VALUES (?,?,?,?,?,?,?,?)");
+		stmt.setString(1, villager.getUniqueId()+"");
+		stmt.setString(2, villager.getCustomName());
+		stmt.setDouble(3, villager.getLocation().getX());
+		stmt.setDouble(4, villager.getLocation().getY());
+		stmt.setDouble(5, villager.getLocation().getZ());
+		stmt.setString(6, villager.getLocation().getWorld().getName());
+		stmt.setString(7, tag.asString().replaceAll("'", "''"));
+		stmt.setString(8, sdf.format(System.currentTimeMillis()));
+
+		
 		stmt.executeUpdate();
 		}catch(Exception exc2)
 		{
@@ -136,15 +145,23 @@ public class VillagerListeners implements Listener {
 				{
 					
 					PreparedStatement updateStmt = con.prepareStatement("UPDATE villager SET "
-							+ "posx='"+villager.getLocation().getX()+"',"
-							+ "posy='"+villager.getLocation().getY()+"',"
-							+ "posz='"+villager.getLocation().getZ()+"',"
-							+ "world='"+villager.getLocation().getWorld().getName()+"',"
-							+ "nbt='"+tag.asString().replaceAll("'", "''")+"',"
-							+ "name='"+villager.getCustomName()+"',"
-							+ "timestamp='"+sdf.format(System.currentTimeMillis())+"' "
-							+ "WHERE uuid='"+villager.getUniqueId()+"'");
-					updateStmt.executeUpdate();		
+							+ "posx=?,"
+							+ "posy=?,"
+							+ "posz=?,"
+							+ "world=?,"
+							+ "nbt=?,"
+							+ "name=?,"
+							+ "timestamp=? "
+							+ "WHERE uuid=?");
+					updateStmt.setDouble(1, villager.getLocation().getX());
+					updateStmt.setDouble(2, villager.getLocation().getY());
+					updateStmt.setDouble(3, villager.getLocation().getZ());
+					updateStmt.setString(4, villager.getLocation().getWorld().getName());
+					updateStmt.setString(5, tag.asString().replaceAll("'", "''"));
+					updateStmt.setString(6, villager.getCustomName());
+					updateStmt.setString(7, sdf.format(System.currentTimeMillis()));
+					updateStmt.setString(8, villager.getUniqueId()+"");
+					updateStmt.executeUpdate();
 					return true;
 				}
 				else
