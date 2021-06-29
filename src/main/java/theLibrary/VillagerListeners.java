@@ -6,27 +6,25 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+
 
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityTransformEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import net.minecraft.server.v1_15_R1.*;
+import de.tr7zw.nbtapi.NBTEntity;
 
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftEntity;
 
 
 public class VillagerListeners implements Listener {
@@ -43,6 +41,8 @@ public class VillagerListeners implements Listener {
 	Connection con = null;
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
 	
+	/*
+	 * Disabled onVillagerDeath for backup purposes
 	@EventHandler
 	public void onVillagerDeath(EntityDeathEvent e)
 	{
@@ -56,7 +56,8 @@ public class VillagerListeners implements Listener {
 				
 			}
 		}
-	}
+	}*/
+	
 	/*
 	 * This EventHandler is the first try to implement a "delete on transform to witch" logic
 	 * Sadly, the witch has no data which can 
@@ -102,9 +103,8 @@ public class VillagerListeners implements Listener {
 	
 	private void createVillagerData(Villager villager)
 	{
-		net.minecraft.server.v1_15_R1.Entity nmsEntity = ((CraftEntity)villager).getHandle();
-		NBTTagCompound tag = new NBTTagCompound();
-		nmsEntity.save(tag);
+		NBTEntity nbte = new NBTEntity(villager);
+		String tag = nbte.toString();
 		try
 		{
 		PreparedStatement stmt = con.prepareStatement("INSERT INTO villager (uuid,name,posx,posy,posz,world,nbt,timestamp) VALUES (?,?,?,?,?,?,?,?)");
@@ -114,7 +114,7 @@ public class VillagerListeners implements Listener {
 		stmt.setDouble(4, villager.getLocation().getY());
 		stmt.setDouble(5, villager.getLocation().getZ());
 		stmt.setString(6, villager.getLocation().getWorld().getName());
-		stmt.setString(7, tag.asString().replaceAll("'", "''"));
+		stmt.setString(7, tag.replaceAll("'", "''"));
 		stmt.setString(8, sdf.format(System.currentTimeMillis()));
 
 		
@@ -127,9 +127,8 @@ public class VillagerListeners implements Listener {
 	
 	private boolean updateVillagerData(Villager villager)
 	{
-		net.minecraft.server.v1_15_R1.Entity nmsEntity = ((CraftEntity)villager).getHandle();
-		NBTTagCompound tag = new NBTTagCompound();
-		nmsEntity.save(tag);
+		NBTEntity nbte = new NBTEntity(villager);
+		String tag = nbte.toString();
 		//nmsEntity.c(tag);
 		try
 		{
@@ -140,7 +139,7 @@ public class VillagerListeners implements Listener {
 			if(!rs.isClosed())
 			{
 				String nbtDB = rs.getString("nbt").replaceAll("Spigot.ticksLived:[0123456789]*,", "");
-				String nbtWorld = tag.asString().replaceAll("Spigot.ticksLived:[0123456789]*,", "");
+				String nbtWorld = tag.replaceAll("Spigot.ticksLived:[0123456789]*,", "");
 				if(!nbtDB.equals(nbtWorld))
 				{
 					
@@ -157,7 +156,7 @@ public class VillagerListeners implements Listener {
 					updateStmt.setDouble(2, villager.getLocation().getY());
 					updateStmt.setDouble(3, villager.getLocation().getZ());
 					updateStmt.setString(4, villager.getLocation().getWorld().getName());
-					updateStmt.setString(5, tag.asString().replaceAll("'", "''"));
+					updateStmt.setString(5, tag.replaceAll("'", "''"));
 					updateStmt.setString(6, villager.getCustomName());
 					updateStmt.setString(7, sdf.format(System.currentTimeMillis()));
 					updateStmt.setString(8, villager.getUniqueId()+"");
@@ -226,7 +225,7 @@ public class VillagerListeners implements Listener {
 							}
 							else
 							{
-								p.sendMessage("§4Sorry, you have to be in the correct dimension ("+rs.getString("world")+") to respawn this villager.");
+								p.sendMessage("ï¿½4Sorry, you have to be in the correct dimension ("+rs.getString("world")+") to respawn this villager.");
 							}
 						}
 						
